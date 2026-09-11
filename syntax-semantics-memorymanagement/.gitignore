@@ -1,0 +1,23 @@
+# Compiled binaries / executables
+calculate_sum
+memory_demo
+memory_demo_move_error
+type_demo
+closures
+*.exe
+*.out
+
+# Object files
+*.o
+*.obj
+
+# Java
+*.class
+
+# Rust
+/target/
+Cargo.lock
+
+# OS/editor cruft
+.DS_Store
+*.swp
