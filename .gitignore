@@ -1,0 +1,16 @@
+# Compiled binaries / executables
+type_demo
+closures
+*.exe
+*.out
+
+# Object files
+*.o
+*.obj
+
+# Java
+*.class
+
+# OS/editor cruft
+.DS_Store
+*.swp
