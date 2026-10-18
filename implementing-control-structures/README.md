@@ -97,5 +97,4 @@ javascript/scheduler.js   same algorithm as Scheduler.java (Node + browser)
 javascript/app.js         GUI behaviour
 javascript/index.html     GUI page and styles
 javascript/cli.js         Node runner with the sample data
-screenshots/              console and GUI output
 ```
