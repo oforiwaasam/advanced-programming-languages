@@ -1,6 +1,7 @@
 # Compiled binaries / executables
 type_demo
 closures
+ride_sharing
 *.exe
 *.out
 
