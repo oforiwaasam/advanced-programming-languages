@@ -4,7 +4,7 @@ Two implementations of the same class-based design: `Ride` (abstract) with
 `StandardRide`, `PremiumRide`, `SharedRide`, plus `Driver` and `Rider`.
 
 ## C++ (C++17)
-    cd cpp
+    cd class-based-ride-sharing-system/cpppp
     clang++ -std=c++17 -Wall -Wextra -o ride_sharing ride_sharing.cpp
     ./ride_sharing
 
