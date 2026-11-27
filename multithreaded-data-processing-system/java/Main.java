@@ -30,6 +30,7 @@ public final class Main {
     private static final String OUTPUT_FILE = "results.txt";
     private static final String LOG_FILE = "app.log";
     private static final long TIMEOUT_SECONDS = 30;
+    private static final int PRODUCER_DELAY_MS = 200; // pause between adding tasks (demo of workers waiting)
 
     public static void main(String[] args) {
         setupLogging();
@@ -53,9 +54,18 @@ public final class Main {
             }
 
             // Real tasks. One has a null payload to exercise error handling.
+            // The short pause after each add lets workers drain the queue and block,
+            // which demonstrates the Condition wait ("waiting: queue empty" in the log).
             for (int i = 1; i <= NUM_TASKS; i++) {
                 String payload = (i == BAD_TASK_ID) ? null : "data-" + i;
                 taskQueue.addTask(new Task(i, payload));
+                try {
+                    Thread.sleep(PRODUCER_DELAY_MS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    LOGGER.warning("Main interrupted while adding tasks");
+                    break;
+                }
             }
 
             // One poison pill per worker, added AFTER every real task. The
@@ -74,6 +84,7 @@ public final class Main {
                 if (!executor.awaitTermination(TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
                     LOGGER.severe("Timed out waiting for workers; forcing shutdown");
                     executor.shutdownNow(); // interrupts any stragglers
+                    executor.awaitTermination(5, TimeUnit.SECONDS); // let interrupted workers finish logging
                 }
             } catch (InterruptedException e) {
                 LOGGER.warning("Main interrupted while waiting; forcing shutdown");
