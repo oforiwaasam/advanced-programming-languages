@@ -53,9 +53,6 @@ public final class Main {
                 executor.submit(new Worker(i, taskQueue, resultsWriter));
             }
 
-            // Real tasks. One has a null payload to exercise error handling.
-            // The short pause after each add lets workers drain the queue and block,
-            // which demonstrates the Condition wait ("waiting: queue empty" in the log).
             for (int i = 1; i <= NUM_TASKS; i++) {
                 String payload = (i == BAD_TASK_ID) ? null : "data-" + i;
                 taskQueue.addTask(new Task(i, payload));
@@ -68,9 +65,7 @@ public final class Main {
                 }
             }
 
-            // One poison pill per worker, added AFTER every real task. The
-            // queue is FIFO, so each worker reaches a pill only once the real
-            // work is gone. Too few pills and some workers would wait forever.
+            // Poison pills: one for each worker, so they all exit cleanly.
             for (int i = 0; i < NUM_WORKERS; i++) {
                 taskQueue.addTask(Task.POISON);
             }
@@ -78,9 +73,6 @@ public final class Main {
             // shutdown() only stops new submissions; it does not wait.
             executor.shutdown();
             try {
-                // This is the call that actually blocks. It must stay inside
-                // the try-with-resources, or the writer would close while
-                // workers are still writing.
                 if (!executor.awaitTermination(TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
                     LOGGER.severe("Timed out waiting for workers; forcing shutdown");
                     executor.shutdownNow(); // interrupts any stragglers
